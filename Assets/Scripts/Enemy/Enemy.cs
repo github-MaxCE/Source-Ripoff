@@ -26,30 +26,36 @@ public class Enemy : MonoBehaviour
 
     public bool canseeplayer;
     
-    public Vector3 x;
-    public Vector3 y;
+    private Vector3 up;
+    private Vector3 down;
+    private Vector3 left;
+    private Vector3 right;
+    private Vector3 middle;
 
     void Awake()
     {
+
         player = GameObject.Find("Player");
         playermask = player.layer;
         agent = this.GetComponent<NavMeshAgent>();
     }
     void Start()
     {
-        Vector3 middle = new Vector3(0, 0, sightRange);
-        x = Quaternion.AngleAxis((horizontalfov/2), Vector3.up) * middle;
-        y = Quaternion.AngleAxis((verticalfov/2), Vector3.right) * middle;
+        Vector3 lmiddle = middle = new Vector3(transform.position.x, transform.position.y, transform.position.z + sightRange);
+        up = Quaternion.Euler(-(verticalfov / 2), 0, 0) * lmiddle;
+        down = Quaternion.Euler((verticalfov / 2), 0, 0) * lmiddle;
+        left = Quaternion.Euler(0, -(horizontalfov / 2), 0) * lmiddle;
+        right = Quaternion.Euler(0, (horizontalfov / 2), 0) * lmiddle;
+ 
     }
 
     private void Update()
     {
-        Vector3 playertransform = transform.InverseTransformPoint(player.transform.position);
-        Mathf.Clamp(playertransform.x, -x.x, x.x);
-        Mathf.Clamp(playertransform.y, -y.y, y.y);
-        Debug.DrawRay(transform.position, playertransform, Color.blue);
-        Debug.DrawRay(transform.position, x, Color.red);
-        Debug.DrawRay(transform.position, y, Color.green);
+        Debug.DrawRay(transform.position, up, Color.red);
+        Debug.DrawRay(transform.position, down, Color.yellow);
+        Debug.DrawRay(transform.position, left, Color.blue);
+        Debug.DrawRay(transform.position, right, Color.green);
+        
     }
 
     private void cantseeplayer()

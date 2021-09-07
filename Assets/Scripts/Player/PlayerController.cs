@@ -64,8 +64,6 @@ public class PlayerController : MonoBehaviour
     float x;
     float y;
 
-    
-
     private void Start()
     {
         // Hide the cursor
@@ -78,9 +76,6 @@ public class PlayerController : MonoBehaviour
             transform.position.x,
             transform.position.y + playerViewYOffset,
             transform.position.z);
-        _controller.Move(transform.InverseTransformVector(_controller.transform.position));
-        this.transform.rotation = Quaternion.Euler(0, this.transform.rotation.y, 0); // Rotates the collider
-        playerView.rotation     = Quaternion.Euler(playerView.rotation.x, playerView.rotation.y, 0); // Rotates the camera
     }
 
     private void FixedUpdate()
@@ -150,6 +145,7 @@ public class PlayerController : MonoBehaviour
     public void Jump(InputAction.CallbackContext ctx)
     {
         if (!ctx.performed) { return; }
+        bool jmp = ctx.ReadValue<bool>();
         if(Cmd.Jumps == false)
             Cmd.Jumps = true;
         else
@@ -281,7 +277,6 @@ public class PlayerController : MonoBehaviour
         wishdir = transform.TransformDirection(wishdir);
         wishdir.Normalize();
         _controller.Move(wishdir * Settings.sv_noclipspeed);
-        // Reset the gravity velocity
     }
     /**
     * Applies friction to the player, called in both the air and on the ground
