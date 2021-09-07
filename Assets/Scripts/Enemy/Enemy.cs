@@ -45,9 +45,9 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         Vector3 playertransform = transform.InverseTransformPoint(player.transform.position);
-        float fx = Mathf.Clamp(playertransform.x, -x.x, x.x);
-        float fy = Mathf.Clamp(playertransform.y, -y.y, y.y);
-        Debug.DrawRay(transform.position, new Vector3(fx, fy, y.z), Color.blue);
+        Mathf.Clamp(playertransform.x, -x.x, x.x);
+        Mathf.Clamp(playertransform.y, -y.y, y.y);
+        Debug.DrawRay(transform.position, playertransform, Color.blue);
         Debug.DrawRay(transform.position, x, Color.red);
         Debug.DrawRay(transform.position, y, Color.green);
     }
