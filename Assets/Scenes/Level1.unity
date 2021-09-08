@@ -1143,7 +1143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   verticalfov: 80
-  horizontalfov: 90
+  horizontalfov: 150
   walkpointobject: {fileID: 0}
   navMeshData: {fileID: 23800000, guid: e1c61bf4109835e6db04b45b21737dfb, type: 2}
   walkPoint: {x: 0, y: 0, z: 0}
