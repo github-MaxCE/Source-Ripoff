@@ -19,51 +19,51 @@ public class Enemy : MonoBehaviour
     public float walkPointRange;
 
     //States
-    private LayerMask playermask;
+    public LayerMask playermask;
     public float sightRange = 33f;
     public float instantsightRange = 16.5f;
-    public bool canhearplayer;
+    public bool canhearplayerb;
 
-    public bool canseeplayer;
-    
-    private Vector3 up;
-    private Vector3 down;
-    private Vector3 left;
-    private Vector3 right;
-    private Vector3 middle;
+    public bool canseeplayerb;
+
+
+    private Vector3 playertransform;
 
     void Awake()
     {
 
         player = GameObject.Find("Player");
-        playermask = player.layer;
         agent = this.GetComponent<NavMeshAgent>();
-    }
-    void Start()
-    {
-        Vector3 lmiddle = middle = new Vector3(transform.position.x, transform.position.y, transform.position.z + sightRange);
-        up = Quaternion.Euler(-(verticalfov / 2), 0, 0) * lmiddle;
-        down = Quaternion.Euler((verticalfov / 2), 0, 0) * lmiddle;
-        left = Quaternion.Euler(0, -(horizontalfov / 2), 0) * lmiddle;
-        right = Quaternion.Euler(0, (horizontalfov / 2), 0) * lmiddle;
- 
     }
 
     private void Update()
     {
-        Debug.DrawRay(transform.position, up, Color.red);
-        Debug.DrawRay(transform.position, down, Color.yellow);
-        Debug.DrawRay(transform.position, left, Color.blue);
-        Debug.DrawRay(transform.position, right, Color.green);
-        
+        playertransform = player.transform.position;
+        if(isplayerinfov()) canseeplayer();
+        else                canhearplayer();
     }
 
-    private void cantseeplayer()
+    private bool isplayerinfov()
     {
-        foreach(Transform x in walkpointobject.transform)
-        {
-            int importance = int.Parse(x.name.Split(new string[] { "->" }, StringSplitOptions.None)[1]);
-        }
+        Vector3 directionx = (new Vector3(playertransform.x, 0, playertransform.z) - new Vector3(transform.position.x, 0, transform.position.z)).normalized;
+        Vector3 directiony = (new Vector3(0, playertransform.y, playertransform.z) - new Vector3(0, transform.position.y, transform.position.z)).normalized;
+        return ((Vector3.Angle(transform.forward, directionx) < horizontalfov / 2) && (Vector3.Angle(transform.forward, directiony) < verticalfov / 2));
     }
 
+    private void canseeplayer()
+    {
+        RaycastHit hitinfo;
+        Vector3 directiontoplayer = playertransform - transform.position;
+        Physics.Raycast(transform.position, directiontoplayer, out hitinfo, sightRange);
+        Debug.DrawRay(transform.position, directiontoplayer, Color.black);
+        if(hitinfo.transform.name == "Player")
+            canseeplayerb = true;
+        else
+            canseeplayerb = false;
+    }
+
+    private void canhearplayer()
+    {
+        canhearplayerb = Physics.CheckSphere(transform.position, instantsightRange, playermask);
+    }
 }
